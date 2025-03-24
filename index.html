@@ -586,8 +586,7 @@
     padding: 10px 0;
     min-width: 200px;
     display: none;
-    z-index: 200;
-    pointer-events: none;
+    z-index: 100;
   }
 
   .nav-menu.active {
@@ -633,7 +632,7 @@
     right: 0;
     bottom: 0;
     background-color: rgba(0, 0, 0, 0.3);
-    z-index: 500;
+    z-index: 99;
     display: none;
     animation: fadeIn 0.2s ease-in-out;
   }
@@ -913,17 +912,17 @@
       });
 
       // Add this after the other event listeners in your DOMContentLoaded function
-document.addEventListener('DOMContentLoaded', function () {
-  const navItems = document.querySelectorAll('.nav-item');
-  navItems.forEach(item => {
-    item.addEventListener('click', function () {
-      addMessage(this.textContent, true);
-      navMenu.classList.remove('active');
-      menuOverlay.classList.remove('active');
-    });
+const navItems = document.querySelectorAll('.nav-item');
+navItems.forEach(item => {
+  item.addEventListener('click', function() {
+    // Add the clicked nav item text as a user message
+    addMessage(this.textContent, true);
+    
+    // Close the nav menu and overlay
+    navMenu.classList.remove('active');
+    menuOverlay.classList.remove('active');
   });
 });
-
 
       // Update send button icon functions
       function setSendIcon() {
