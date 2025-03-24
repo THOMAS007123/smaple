@@ -912,12 +912,14 @@
       });
 
       // Add this after the other event listeners in your DOMContentLoaded function
-const navItems = document.querySelectorAll('.nav-item');
-navItems.forEach(item => {
-  item.addEventListener('click', function() {
-    addMessage(this.textContent, true);
-    navMenu.classList.remove('active');
-    menuOverlay.classList.remove('active');
+document.addEventListener('DOMContentLoaded', function () {
+  const navItems = document.querySelectorAll('.nav-item');
+  navItems.forEach(item => {
+    item.addEventListener('click', function () {
+      addMessage(this.textContent, true);
+      navMenu.classList.remove('active');
+      menuOverlay.classList.remove('active');
+    });
   });
 });
 
