@@ -1145,76 +1145,67 @@ function addMessage(text, isUser = false) {
 // Speech-to-Text Integration with Auto Send
 // -----------------------------
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-const speechBtn = document.getElementById('speechBtn');
-if (SpeechRecognition) {
-  const recognition = new SpeechRecognition();
-  recognition.continuous = false;
-  recognition.interimResults = true;
-  recognition.lang = "en-IN";
-  let finalTranscript = "";
-  let silenceTimer;
+      const speechBtn = document.getElementById('speechBtn');
+      if (SpeechRecognition) {
+        const recognition = new SpeechRecognition();
+        recognition.continuous = false;
+        recognition.interimResults = true;
+        recognition.lang = "en-IN";
+        let finalTranscript = "";
+        let silenceTimer;
 
-  function startSilenceTimer() {
-    clearTimeout(silenceTimer);
-    silenceTimer = setTimeout(() => {
-      recognition.stop();
-      speechBtn.style.background = "";
-    }, 8000);
-  }
+        function startSilenceTimer() {
+          clearTimeout(silenceTimer);
+          silenceTimer = setTimeout(() => {
+            recognition.stop();
+            speechBtn.style.background = "";
+          }, 8000);
+        }
 
-  recognition.onresult = (event) => {
-    startSilenceTimer();
-    let interimTranscript = "";
-    for (let i = event.resultIndex; i < event.results.length; i++) {
-      if (event.results[i].isFinal) {
-        finalTranscript += event.results[i][0].transcript;
+        recognition.onresult = (event) => {
+          startSilenceTimer();
+          let interimTranscript = "";
+          for (let i = event.resultIndex; i < event.results.length; i++) {
+            if (event.results[i].isFinal) {
+              finalTranscript += event.results[i][0].transcript;
+            } else {
+              interimTranscript += event.results[i][0].transcript;
+            }
+          }
+          inputField.value = finalTranscript + interimTranscript;
+        };
+        recognition.onstart = () => {
+  console.log("Speech recognition started");
+  document.getElementById('glow').classList.add('active');
+};
+        recognition.onerror = (event) => {
+          console.error("Speech recognition error", event.error);
+          clearTimeout(silenceTimer);
+          recognition.stop();
+          speechBtn.style.background = "";
+        };
+
+        recognition.onend = () => {
+          clearTimeout(silenceTimer);
+          speechBtn.style.background = "";
+          document.getElementById('glow').classList.remove('active')
+          // Automatically send recognized text if available
+          if (inputField.value.trim() !== "") {
+            sendButton.click();
+          }
+        };
+
+        speechBtn.addEventListener('click', () => {
+          finalTranscript = "";
+          inputField.value = "";
+          recognition.start();
+          speechBtn.style.background = "";
+          startSilenceTimer();
+        });
       } else {
-        interimTranscript += event.results[i][0].transcript;
+        speechBtn.disabled = true;
+        speechBtn.title = "Speech recognition not supported in this browser.";
       }
-    }
-    inputField.value = finalTranscript + interimTranscript;
-  };
-
-  recognition.onstart = () => {
-    console.log("Speech recognition started");
-    document.getElementById('glow').classList.add('active');
-  };
-
-  recognition.onerror = (event) => {
-    console.error("Speech recognition error", event.error);
-    clearTimeout(silenceTimer);
-    recognition.stop();
-    speechBtn.style.background = "";
-  };
-
-  recognition.onend = () => {
-    clearTimeout(silenceTimer);
-    speechBtn.style.background = "";
-    document.getElementById('glow').classList.remove('active')
-    // Automatically send recognized text if available
-    if (inputField.value.trim() !== "") {
-      sendButton.click();
-    }
-  };
-
-  speechBtn.addEventListener('click', () => {
-    finalTranscript = "";
-    inputField.value = "";
-    navigator.mediaDevices.getUserMedia({ audio: true })
-      .then(() => {
-        recognition.start();
-      })
-      .catch((error) => {
-        console.error("Microphone permission denied:", error);
-        alert("Please allow microphone access to use speech recognition.");
-      });
-    speechBtn.style.background = "";
-    startSilenceTimer();
-  });
-} else {
-  speechBtn.disabled = true;
-  speechBtn.title = "Speech recognition not supported in this browser.";
-}
 
 
     });
