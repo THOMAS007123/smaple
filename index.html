@@ -915,14 +915,12 @@
 const navItems = document.querySelectorAll('.nav-item');
 navItems.forEach(item => {
   item.addEventListener('click', function() {
-    // Add the clicked nav item text as a user message
     addMessage(this.textContent, true);
-    
-    // Close the nav menu and overlay
     navMenu.classList.remove('active');
     menuOverlay.classList.remove('active');
   });
 });
+
 
       // Update send button icon functions
       function setSendIcon() {
