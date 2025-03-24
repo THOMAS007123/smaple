@@ -1141,6 +1141,9 @@ function addMessage(text, isUser = false) {
       // -----------------------------
 // Speech-to-Text Integration with Auto Send
 // -----------------------------
+// -----------------------------
+// Speech-to-Text Integration with Auto Send
+// -----------------------------
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 const speechBtn = document.getElementById('speechBtn');
 if (SpeechRecognition) {
@@ -1197,7 +1200,14 @@ if (SpeechRecognition) {
   speechBtn.addEventListener('click', () => {
     finalTranscript = "";
     inputField.value = "";
-    recognition.start();
+    navigator.mediaDevices.getUserMedia({ audio: true })
+      .then(() => {
+        recognition.start();
+      })
+      .catch((error) => {
+        console.error("Microphone permission denied:", error);
+        alert("Please allow microphone access to use speech recognition.");
+      });
     speechBtn.style.background = "";
     startSilenceTimer();
   });
@@ -1205,6 +1215,7 @@ if (SpeechRecognition) {
   speechBtn.disabled = true;
   speechBtn.title = "Speech recognition not supported in this browser.";
 }
+
 
     });
   </script>
